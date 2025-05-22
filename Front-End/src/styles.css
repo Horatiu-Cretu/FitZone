@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif; 
+  background-color: #f4f7f6; 
+  color: #333;
+  line-height: 1.5;
+  display: flex; 
+  flex-direction: column; 
+  min-height: 100vh; 
+}
+
+a {
+  color: #10B981; 
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.container { 
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px; 
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease, color 0.3s ease;
+  border: none;
+  text-align: center;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background-color: #10B981;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #059669;
+}
+
+.btn-secondary {
+  background-color: #6B7280;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #4B5563;
+}
+
+.btn-outline-primary {
+  background-color: transparent;
+  color: #10B981;
+  border: 2px solid #10B981;
+}
+
+.btn-outline-primary:hover {
+  background-color: #10B981;
+  color: white;
+  border-color: #10B981;
+}
