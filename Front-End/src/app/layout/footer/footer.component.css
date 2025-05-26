@@ -1,0 +1,17 @@
+.app-footer {
+  background-color: #374151;
+  color: #D1D5DB;
+  text-align: center;
+  padding: 15px 20px;
+  margin-top: auto;
+  font-size: 0.9rem;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.app-footer p {
+  margin: 5px 0;
+}
+
+.heart {
+  color: #e74c3c;
+}

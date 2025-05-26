@@ -13,8 +13,18 @@ export const routes: Routes = [
   { path: 'workouts', component: WorkoutsComponent, title: 'Workouts - FitZone' },
   { path: 'booking', component: BookingComponent, title: 'Book a Session - FitZone' },
   { path: 'schedule/:workoutId', component: ScheduleComponent, title: 'Workout Schedule - FitZone' },
-
   { path: 'login', component: LoginComponent, title: 'Login - FitZone' },
   { path: 'signup', component: SignupComponent, title: 'Sign Up - FitZone' },
+
+  {
+    path: 'user',
+    loadChildren: () => import('./pages/user/user.routes').then(m => m.USER_ROUTES),
+    title: 'User Area - FitZone'
+  },
+  {
+    path: 'trainer',
+    loadChildren: () => import('./pages/trainer/trainer.routes').then(m => m.TRAINER_ROUTES),
+    title: 'Trainer Area - FitZone'
+  },
 
 ];

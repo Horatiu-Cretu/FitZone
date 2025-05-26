@@ -8,8 +8,8 @@ import { FooterComponent } from './layout/footer/footer.component';
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet,     
-    RouterModule,     
+    RouterOutlet,
+    RouterModule,
     HeaderComponent,
     FooterComponent
   ],

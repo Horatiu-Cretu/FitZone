@@ -1,0 +1,102 @@
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 180px);
+  padding: 30px 20px;
+  background-color: #f4f7f6;
+}
+
+.auth-form-placeholder {
+  background-color: #ffffff;
+  padding: 35px 45px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+}
+
+.auth-form-placeholder h2 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.auth-form-placeholder p {
+  color: #555e68;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.auth-form-placeholder .info-text {
+  color: #7f8c8d;
+  font-style: italic;
+  margin-bottom: 25px;
+  font-size: 0.9rem;
+}
+
+.form-group-placeholder {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group-placeholder label {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: 500;
+  color: #34495e;
+  font-size: 0.9rem;
+}
+
+.form-control-placeholder {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #bdc3c7;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.form-control-placeholder:focus {
+  outline: none;
+  border-color: #10B981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+}
+
+.btn-submit-placeholder {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: #10B981;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.btn-submit-placeholder:hover {
+  background-color: #0d946a;
+}
+
+.navigation-links {
+  margin-top: 25px;
+  font-size: 0.9rem;
+}
+
+.navigation-links a {
+  color: #10B981;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.navigation-links a:hover {
+  text-decoration: underline;
+}

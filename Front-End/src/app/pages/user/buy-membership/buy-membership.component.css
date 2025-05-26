@@ -1,0 +1,130 @@
+.buy-membership-container {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.buy-membership-container h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.buy-membership-container > p {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #4B5563;
+  margin-bottom: 30px;
+}
+
+.membership-plans {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+}
+
+.plan-card {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 25px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.plan-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.plan-card.highlighted {
+  border-color: #10B981;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+}
+
+.popular-badge {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #10B981;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.plan-card h3 {
+  font-size: 1.6rem;
+  color: #1F2937;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.plan-card .price {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #10B981;
+  margin-bottom: 20px;
+}
+
+.plan-card ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 25px;
+  text-align: left;
+  width: 100%;
+}
+
+.plan-card ul li {
+  font-size: 0.95rem;
+  color: #4B5563;
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.plan-card ul li::before {
+  content: '✓';
+  color: #10B981;
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.btn-select-plan {
+  background-color: #374151;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  margin-top: auto;
+}
+
+.plan-card.highlighted .btn-select-plan {
+  background-color: #10B981;
+}
+
+.btn-select-plan:hover {
+  background-color: #1F2937;
+}
+
+.plan-card.highlighted .btn-select-plan:hover {
+  background-color: #059669;
+}
+

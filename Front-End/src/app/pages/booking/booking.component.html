@@ -1,0 +1,53 @@
+<div class="booking-container">
+  <h2>Book Your Session</h2>
+  <p>Secure your spot in one of our popular classes.</p>
+
+  <form class="booking-form" (ngSubmit)="submitBooking()" #bookingForm="ngForm">
+    <div class="form-group">
+      <label for="workout-select">Select Workout:</label>
+      <select id="workout-select" name="selectedWorkout" ngModel required>
+        <option value="" disabled selected>-- Choose a class --</option>
+        <option value="blast">Full Body Blast</option>
+        <option value="yoga">Yoga Flow</option>
+        <option value="strength">Strength & Conditioning</option>
+        <option value="spin">Spin Cycle Challenge</option>
+        <option value="boxing">Boxing Fundamentals</option>
+        <option value="pilates">Mat Pilates</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" name="fullName" ngModel required placeholder="Enter your full name">
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email Address:</label>
+      <input type="email" id="email" name="email" ngModel required email placeholder="Enter your email">
+    </div>
+
+    <fieldset class="payment-section">
+      <legend>Payment Information</legend>
+      <p>Payment gateway integration would go here.</p>
+      <div class="form-group">
+        <label for="card-number">Card Number:</label>
+        <input type="text" id="card-number" placeholder="**** **** **** ****" disabled>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="expiry">Expiry Date:</label>
+          <input type="text" id="expiry" placeholder="MM/YY" disabled>
+        </div>
+        <div class="form-group">
+          <label for="cvc">CVC:</label>
+          <input type="text" id="cvc" placeholder="***" disabled>
+        </div>
+      </div>
+    </fieldset>
+
+    <button type="submit" class="btn btn-primary submit-btn" [disabled]="!bookingForm.form.valid">
+      Confirm Booking & Pay
+    </button>
+
+    <p *ngIf="submissionMessage" class="submission-message" [innerHTML]="submissionMessage"></p> </form>
+</div>

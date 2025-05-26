@@ -1,0 +1,178 @@
+.manage-sessions-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.manage-sessions-container h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.manage-sessions-container > p {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #4B5563;
+  margin-bottom: 20px;
+}
+
+.btn-add-new {
+  background-color: #10B981;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.btn-add-new:hover {
+  background-color: #059669;
+}
+
+.session-form {
+  background-color: #f9fafb;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 30px;
+}
+
+.session-form h3 {
+  font-size: 1.5rem;
+  color: #1F2937;
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group input[type="time"],
+.form-group input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #D1D5DB;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #10B981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.error-message {
+  color: #EF4444;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.btn-save {
+  background-color: #3B82F6;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: block;
+  width: 100%;
+}
+.btn-save:hover {
+  background-color: #2563EB;
+}
+.btn-save:disabled {
+  background-color: #9CA3AF;
+  cursor: not-allowed;
+}
+
+.sessions-list-management h3 {
+  font-size: 1.5rem;
+  color: #1F2937;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 5px;
+}
+
+.sessions-table-container {
+  overflow-x: auto;
+}
+
+.sessions-list-management table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.sessions-list-management th, .sessions-list-management td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sessions-list-management th {
+  background-color: #f3f4f6;
+  color: #374151;
+  font-weight: 600;
+}
+
+.sessions-list-management td {
+  color: #4B5563;
+}
+
+.btn-edit, .btn-delete {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-right: 5px;
+  border: none;
+  color: white;
+}
+
+.btn-edit {
+  background-color: #F59E0B;
+}
+.btn-edit:hover {
+  background-color: #D97706;
+}
+
+.btn-delete {
+  background-color: #EF4444;
+}
+.btn-delete:hover {
+  background-color: #DC2626;
+}
+
+.no-items-message {
+  text-align: center;
+  font-size: 1rem;
+  color: #4B5563;
+  padding: 20px;
+  background-color: #F3F4F6;
+  border-radius: 6px;
+}
+

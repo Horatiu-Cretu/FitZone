@@ -1,0 +1,33 @@
+<div class="sessions-container">
+  <h2>My Training Sessions</h2>
+  <p>Here is a list of your upcoming training sessions.</p>
+
+  <div *ngIf="sessions.length > 0; else noSessions" class="sessions-list">
+    <table>
+      <thead>
+      <tr>
+        <th>Class Name</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Participants</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let session of sessions">
+        <td>{{ session.className }}</td>
+        <td>{{ session.date }}</td>
+        <td>{{ session.time }}</td>
+        <td>{{ session.participants }} / {{ session.capacity }}</td>
+        <td>
+          <a [routerLink]="['/trainer/session-details', session.id]" class="btn btn-primary">View Details</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #noSessions>
+    <p class="no-items-message">You have no training sessions scheduled.</p>
+  </ng-template>
+</div>

@@ -1,0 +1,34 @@
+<div class="schedule-container">
+  <h2>Schedule for {{ workoutName }}</h2>
+
+  <div class="calendar-nav">
+    <button (click)="goToPreviousMonth()" class="btn btn-nav">&lt; Prev</button>
+    <span class="current-month">{{ currentDate | date:'MMMM yyyy' }}</span>
+    <button (click)="goToNextMonth()" class="btn btn-nav">Next &gt;</button>
+  </div>
+
+  <div class="calendar-grid">
+    <div class="weekday" *ngFor="let dayLabel of weekdays">{{ dayLabel }}</div>
+    <div
+      *ngFor="let day of calendarDays"
+      class="day-cell"
+      [class.other-month]="!day.isCurrentMonth"
+      [class.today]="day.isToday && day.isCurrentMonth"
+      [class.selected]="isDaySelected(day)"
+      (click)="selectDay(day)">
+      {{ day.dayOfMonth }}
+    </div>
+  </div>
+
+  <div *ngIf="selectedDate" class="timetable-container">
+    <h3>Timetable for {{ selectedDate | date:'EEEE, MMMM d, yyyy' }}</h3>
+    <ul class="timetable-list">
+      <li *ngFor="let slot of hourlySchedule" class="time-slot" [class.booked]="slot.status === 'booked'" [class.available]="slot.status === 'available'">
+        <span class="time">{{ slot.displayTime }}</span>
+        <span class="status">{{ slot.status | titlecase }}</span>
+        <button *ngIf="slot.status === 'available'" class="btn btn-book-slot" (click)="bookTimeSlot(slot)">Book Slot</button>
+      </li>
+    </ul>
+    <p class="mock-notice">*Booking data is simulated for demonstration.</p>
+  </div>
+</div>
