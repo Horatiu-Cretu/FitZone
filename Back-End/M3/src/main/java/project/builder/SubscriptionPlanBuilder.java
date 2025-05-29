@@ -18,7 +18,7 @@ public class SubscriptionPlanBuilder {
                 .description(dto.getDescription())
                 .price(dto.getPrice())
                 .durationDays(dto.getDurationDays())
-                .isActive(dto.isActive() == null ? true : dto.isActive())
+                .isActive(dto.getIsActive() == null ? true : dto.getIsActive())
                 .build();
     }
 
@@ -43,5 +43,5 @@ public class SubscriptionPlanBuilder {
         return entities.stream()
                 .map(SubscriptionPlanBuilder::toViewDTO)
                 .collect(Collectors.toList());
-    }
+}
 }
