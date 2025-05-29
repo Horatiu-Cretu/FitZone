@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Transactional; // Import this
 import project.builder.UserSubscriptionBuilder;
 import project.client.PaymentGatewayClient;
 import project.dto.PurchaseSubscriptionRequestDTO;
@@ -62,7 +62,6 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
             throw new RuntimeException("User already has an active subscription.");
         }
 
-
         PaymentStatus paymentStatus = paymentGatewayClient.processPayment(userId, plan.getPrice(), purchaseRequest.getPaymentConfirmationId());
 
         if (paymentStatus != PaymentStatus.SUCCESS) {
@@ -77,6 +76,7 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserSubscriptionViewDTO getCurrentUserSubscription(Long userId) {
         Optional<UserSubscription> activeSubscription = userSubscriptionRepository
                 .findActiveSubscriptionForUser(userId, SubscriptionStatus.ACTIVE, LocalDateTime.now());
@@ -110,6 +110,7 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public SubscriptionStatusResponseDTO getUserSubscriptionStatus(Long userId) {
         Optional<UserSubscription> currentSubscriptionOpt = userSubscriptionRepository
                 .findActiveSubscriptionForUser(userId, SubscriptionStatus.ACTIVE, LocalDateTime.now());

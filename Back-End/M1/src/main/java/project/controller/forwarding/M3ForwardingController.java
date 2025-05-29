@@ -105,6 +105,7 @@ public class M3ForwardingController extends BaseController {
     }
 
     @GetMapping("/internal/subscriptions/user/{userId}/status")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> getUserSubscriptionStatus(@PathVariable Long userId, HttpServletRequest request) {
         String url = m3ServiceUrl + "/api/internal/subscriptions/user/" + userId + "/status";
         HttpEntity<String> entity = new HttpEntity<>(createHeaders(request));

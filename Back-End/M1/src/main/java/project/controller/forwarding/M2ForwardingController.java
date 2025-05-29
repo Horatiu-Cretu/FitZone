@@ -25,7 +25,7 @@ public class M2ForwardingController extends BaseController {
     private String m2ServiceUrl;
 
     @Autowired
-    public M2ForwardingController(RestTemplate restTemplate, ObjectMapper objectMapper) { // Injectează ObjectMapper
+    public M2ForwardingController(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
     }
@@ -104,7 +104,18 @@ public class M2ForwardingController extends BaseController {
             logger.warn("M1: Client ID not found in token for createBooking proxy.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"error\":\"Client ID missing from token\"}");
         }
-        return forwardRequest("/api/bookings", HttpMethod.POST, request, body);
+
+        String modifiedBody;
+        try {
+            Map<String, Object> bodyMap = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {});
+            bodyMap.put("clientId", clientIdFromToken);
+            modifiedBody = objectMapper.writeValueAsString(bodyMap);
+            logger.info("M1: Forwarding createBooking for clientId {}. Original body from client: {}, Modified body to M2: {}", clientIdFromToken, body, modifiedBody);
+        } catch (Exception e) {
+            logger.error("M1: Error processing JSON body for createBooking: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Invalid request body format. Expected JSON with trainingSessionId.\"}");
+        }
+        return forwardRequest("/api/bookings", HttpMethod.POST, request, modifiedBody);
     }
 
     @GetMapping("/bookings/my-bookings")

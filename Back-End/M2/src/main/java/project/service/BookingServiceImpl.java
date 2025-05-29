@@ -19,7 +19,6 @@ import project.entity.TrainingSession;
 import project.repository.BookingRepository;
 import project.repository.TrainingSessionRepository;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +45,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private boolean checkUserSubscription(Long clientId) {
-        String M3_SUBSCRIPTION_CHECK_URL = m3ServiceUrl + "/api/subscriptions/check/" + clientId;
+        String M3_SUBSCRIPTION_CHECK_URL = m3ServiceUrl + "/api/internal/subscriptions/user/" + clientId + "/status";
         try {
             logger.debug("Checking subscription for client ID: {} at URL: {}", clientId, M3_SUBSCRIPTION_CHECK_URL);
             ResponseEntity<SubscriptionStatusDTO> response = restTemplate.getForEntity(M3_SUBSCRIPTION_CHECK_URL, SubscriptionStatusDTO.class);
@@ -64,7 +63,6 @@ public class BookingServiceImpl implements BookingService {
             return false;
         }
     }
-
 
     @Override
     @Transactional
@@ -115,10 +113,10 @@ public class BookingServiceImpl implements BookingService {
         return BookingBuilder.toViewDTO(savedBooking);
     }
 
-
     @Override
+    @Transactional(readOnly = true)
     public List<BookingViewDTO> getBookingsByClientId(Long clientId) {
-        List<Booking> bookings = bookingRepository.findByClientId(clientId);
+        List<Booking> bookings = bookingRepository.findByClientIdWithTrainingSession(clientId);
         logger.debug("Fetched {} bookings for client ID: {}", bookings.size(), clientId);
         return bookings.stream()
                 .map(BookingBuilder::toViewDTO)
@@ -126,6 +124,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingViewDTO> getBookingsByTrainingSessionId(Long trainingSessionId, Long requestingTrainerId) {
         TrainingSession session = trainingSessionRepository.findById(trainingSessionId)
                 .orElseThrow(() -> {
@@ -139,7 +138,7 @@ public class BookingServiceImpl implements BookingService {
             throw new SecurityException("You are not authorized to view bookings for this session.");
         }
 
-        List<Booking> bookings = bookingRepository.findByTrainingSessionId(trainingSessionId);
+        List<Booking> bookings = bookingRepository.findByTrainingSessionIdWithTrainingSession(trainingSessionId);
         logger.debug("Fetched {} bookings for session ID: {}", bookings.size(), trainingSessionId);
         return bookings.stream()
                 .map(BookingBuilder::toViewDTO)
@@ -161,9 +160,14 @@ public class BookingServiceImpl implements BookingService {
             throw new SecurityException("You are not authorized to cancel this booking.");
         }
 
-        if (booking.getTrainingSession().getStartTime().isBefore(LocalDateTime.now().plusHours(2))) {
+        TrainingSession trainingSession = booking.getTrainingSession();
+        if (trainingSession == null) {
+            trainingSession = trainingSessionRepository.findById(booking.getTrainingSession().getId()).orElseThrow(() -> new RuntimeException("Training Session not found for booking"));
+        }
+
+        if (trainingSession.getStartTime().isBefore(LocalDateTime.now().plusHours(2))) {
             logger.warn("Attempt to cancel booking ID: {} too close to session start time. Session start: {}",
-                    bookingId, booking.getTrainingSession().getStartTime());
+                    bookingId, trainingSession.getStartTime());
             throw new RuntimeException("Cannot cancel booking less than 2 hours before the session starts.");
         }
 
@@ -174,7 +178,7 @@ public class BookingServiceImpl implements BookingService {
 
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
-        trainingSessionRepository.decrementParticipants(booking.getTrainingSession().getId());
+        trainingSessionRepository.decrementParticipants(trainingSession.getId());
         logger.info("Booking with ID: {} cancelled successfully for client ID: {}", bookingId, clientIdFromToken);
     }
 }
