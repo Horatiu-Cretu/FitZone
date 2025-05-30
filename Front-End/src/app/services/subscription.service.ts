@@ -50,6 +50,7 @@ export class SubscriptionService {
   constructor(private http: HttpClient) { }
 
   getAllSubscriptionPlansForClient(): Observable<SubscriptionPlanViewDTO[]> {
+    console.log('[SubscriptionService] getAllSubscriptionPlansForClient(): Fetching plans for client from URL:', `${this.m3ProxyUrl}/subscription-plans`);
     return this.http.get<SubscriptionPlanViewDTO[]>(`${this.m3ProxyUrl}/subscription-plans`);
   }
 
@@ -66,23 +67,27 @@ export class SubscriptionService {
   }
 
   getAllSubscriptionPlansForAdmin(): Observable<SubscriptionPlanViewDTO[]> {
+    console.log('[SubscriptionService] getAllSubscriptionPlansForAdmin(): Fetching plans for admin from URL:', `${this.m3ProxyUrl}/subscription-plans`); // THIS IS THE FAILING ONE
     return this.http.get<SubscriptionPlanViewDTO[]>(`${this.m3ProxyUrl}/subscription-plans`);
   }
 
   getSubscriptionPlanByIdForAdmin(planId: number | string): Observable<SubscriptionPlanViewDTO> {
+    console.log(`[SubscriptionService] getSubscriptionPlanByIdForAdmin(${planId}): Fetching plan for admin.`);
     return this.http.get<SubscriptionPlanViewDTO>(`${this.m3ProxyUrl}/subscription-plans/${planId}`);
   }
 
   createAdminSubscriptionPlan(planData: SubscriptionPlanDTO): Observable<SubscriptionPlanViewDTO> {
+    console.log('[SubscriptionService] createAdminSubscriptionPlan(): Creating plan for admin with data:', planData);
     return this.http.post<SubscriptionPlanViewDTO>(`${this.m3ProxyUrl}/admin/subscription-plans`, planData);
   }
 
   updateAdminSubscriptionPlan(planId: number | string, planData: SubscriptionPlanDTO): Observable<SubscriptionPlanViewDTO> {
+    console.log(`[SubscriptionService] updateAdminSubscriptionPlan(${planId}): Updating plan for admin with data:`, planData);
     return this.http.put<SubscriptionPlanViewDTO>(`${this.m3ProxyUrl}/admin/subscription-plans/${planId}`, planData);
   }
 
   deleteAdminSubscriptionPlan(planId: number | string): Observable<void> {
+    console.log(`[SubscriptionService] deleteAdminSubscriptionPlan(${planId}): Deleting plan for admin.`);
     return this.http.delete<void>(`${this.m3ProxyUrl}/admin/subscription-plans/${planId}`);
   }
-
 }

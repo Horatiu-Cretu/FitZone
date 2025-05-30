@@ -29,5 +29,6 @@ public class SubscriptionPlanDTO {
     @Positive(message = "Duration must be a positive number of days.")
     private Integer durationDays;
 
+
     private Boolean isActive;
 }

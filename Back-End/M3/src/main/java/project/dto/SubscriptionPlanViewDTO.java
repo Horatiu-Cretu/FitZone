@@ -18,6 +18,7 @@ public class SubscriptionPlanViewDTO {
     private String description;
     private BigDecimal price;
     private Integer durationDays;
+
     @JsonProperty("isActive")
     private boolean isActive;
 }

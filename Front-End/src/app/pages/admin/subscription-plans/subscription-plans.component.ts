@@ -34,33 +34,38 @@ export class SubscriptionPlansComponent implements OnInit {
   constructor(private subscriptionService: SubscriptionService) {}
 
   ngOnInit(): void {
+    console.log('[SubscriptionPlansComponent] ngOnInit: Component initialized, calling loadPlans().');
     this.loadPlans();
   }
+
   loadPlans(): void {
+    console.log('[SubscriptionPlansComponent] loadPlans(): Starting to load plans.');
     this.isLoading = true;
     this.error = null;
     this.subscriptionService.getAllSubscriptionPlansForAdmin().subscribe({
       next: (data: any[]) => {
-        console.log('Data received by loadPlans() in Angular:', JSON.parse(JSON.stringify(data)));
-        this.plans = data.map((p: any) => { // p is also any here
+        console.log('[SubscriptionPlansComponent] loadPlans(): Successfully received data:', data);
+        this.plans = data.map((p: any) => {
           const mappedPlan: SubscriptionPlanViewDTO = {
             id: p.id,
             name: p.name,
             description: p.description,
             price: p.price,
             durationDays: p.durationDays,
-            isActive: p.active,
+            isActive: p.isActive, // Keep the fix from before
             features: p.description?.split(',').map((f: string) => f.trim()) || [],
-
           };
-          console.log(`Processing plan: ID=<span class="math-inline">\{mappedPlan\.id\}, Name\=</span>{mappedPlan.name}, mapped isActive=<span class="math-inline">\{mappedPlan\.isActive\}, Type\=</span>{typeof mappedPlan.isActive}`);
           return mappedPlan;
         });
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error fetching plans for admin', err);
-        this.error = 'Failed to load subscription plans.';
+        console.error('[SubscriptionPlansComponent] loadPlans(): Error fetching plans for admin. Full error object:', err);
+        console.error(`[SubscriptionPlansComponent] loadPlans(): Status: ${err.status}, StatusText: ${err.statusText}, URL: ${err.url}`);
+        if (err.error) {
+          console.error('[SubscriptionPlansComponent] loadPlans(): Error body:', err.error);
+        }
+        this.error = `Failed to load subscription plans. Status: ${err.status} - ${err.statusText || 'Unknown Error'}. Check console for details.`;
         this.isLoading = false;
       }
     });
@@ -71,6 +76,7 @@ export class SubscriptionPlansComponent implements OnInit {
   }
 
   openAddPlanModal(): void {
+    console.log('[SubscriptionPlansComponent] openAddPlanModal(): Opening form to add new plan.');
     this.editingPlanOriginal = null;
     this.currentPlanForm = this.getEmptyPlanForm();
     this.showForm = true;
@@ -108,6 +114,7 @@ export class SubscriptionPlansComponent implements OnInit {
   }
 
   submitPlanForm(form: NgForm): void {
+    console.log('[SubscriptionPlansComponent] submitPlanForm(): Attempting to submit plan form. Editing:', !!this.editingPlanOriginal, 'Data:', this.currentPlanForm);
     this.formError = null;
     if (form.invalid) {
       this.formError = "Please fill in all required fields correctly.";

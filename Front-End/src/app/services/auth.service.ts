@@ -50,16 +50,23 @@ export class AuthService {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+    console.log('[AuthService] Constructor: IsBrowser:', this.isBrowser);
 
-    this.loggedIn = new BehaviorSubject<boolean>(this.hasToken());
+    const initialTokenExists = this.hasToken();
+    const initialRole = this._getRoleFromTokenInternal();
+    console.log('[AuthService] Constructor: Initial token exists?', initialTokenExists);
+    console.log('[AuthService] Constructor: Initial role from token:', initialRole);
+
+    this.loggedIn = new BehaviorSubject<boolean>(initialTokenExists);
     this.isLoggedIn$ = this.loggedIn.asObservable();
-    this._currentUserRole = new BehaviorSubject<string | null>(this._getRoleFromTokenInternal());
+    this._currentUserRole = new BehaviorSubject<string | null>(initialRole);
     this.currentUserRole$ = this._currentUserRole.asObservable();
   }
 
   private hasToken(): boolean {
     if (this.isBrowser) {
-      return !!localStorage.getItem(this.tokenKey);
+      const tokenExists = !!localStorage.getItem(this.tokenKey);
+      return tokenExists;
     }
     return false;
   }
@@ -69,9 +76,10 @@ export class AuthService {
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload.role;
+        const role = payload.role;
+        return role;
       } catch (e) {
-        console.error('Error parsing token for role:', e);
+        console.error('[AuthService] _getRoleFromTokenInternal: Error parsing token for role:', e);
         return null;
       }
     }
@@ -79,23 +87,28 @@ export class AuthService {
   }
 
   public getCurrentUserRole(): string | null {
-    return this._currentUserRole.getValue();
+    const role = this._currentUserRole.getValue();
+    return role;
   }
 
 
   login(credentials: LoginRequestDTO): Observable<LoginResponseDTO> {
+    console.log('[AuthService] login(): Attempting login for email:', credentials.email);
     return this.http.post<LoginResponseDTO>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
+        console.log('[AuthService] login(): Login successful, received token:', response.token ? 'Token received' : 'No token in response');
         this.setToken(response.token);
       })
     );
   }
 
   signup(userData: UserDTO): Observable<UserViewDTO> {
+    console.log('[AuthService] signup(): Attempting signup for email:', userData.email);
     return this.http.post<UserViewDTO>(`${this.apiUrl}/signup`, userData);
   }
 
   logout(): void {
+    console.log('[AuthService] logout(): Clearing token and navigating to login.');
     this.clearToken();
     this.router.navigate(['/login']);
   }
@@ -103,22 +116,30 @@ export class AuthService {
   setToken(token: string): void {
     if (this.isBrowser) {
       localStorage.setItem(this.tokenKey, token);
+      console.log('[AuthService] setToken(): Token set in localStorage. Updating BehaviorSubjects.');
       this.loggedIn.next(true);
-      this._currentUserRole.next(this._getRoleFromTokenInternal());
+      const role = this._getRoleFromTokenInternal();
+      console.log('[AuthService] setToken(): Role after setting token:', role);
+      this._currentUserRole.next(role);
+    } else {
+      console.log('[AuthService] setToken(): Not in browser, token not set in localStorage.');
     }
   }
 
   getToken(): string | null {
     if (this.isBrowser) {
-      return localStorage.getItem(this.tokenKey);
+      const token = localStorage.getItem(this.tokenKey);
+      return token;
     }
     return null;
   }
 
   clearToken(): void {
     if (this.isBrowser) {
+      console.log('[AuthService] clearToken(): Removing token from localStorage.');
       localStorage.removeItem(this.tokenKey);
     }
+    console.log('[AuthService] clearToken(): Updating BehaviorSubjects to logged out state.');
     this.loggedIn.next(false);
     this._currentUserRole.next(null);
   }
@@ -128,9 +149,10 @@ export class AuthService {
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload.sub ? Number(payload.sub) : null;
+        const userId = payload.sub ? Number(payload.sub) : null;
+        return userId;
       } catch (e) {
-        console.error('Error parsing userId from token:', e);
+        console.error('[AuthService] getUserIdFromToken(): Error parsing userId from token:', e);
         return null;
       }
     }
@@ -142,9 +164,10 @@ export class AuthService {
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload.email || null;
+        const email = payload.email || null;
+        return email;
       } catch (e) {
-        console.error('Error parsing email from token:', e);
+        console.error('[AuthService] getUserEmailFromToken(): Error parsing email from token:', e);
         return null;
       }
     }
