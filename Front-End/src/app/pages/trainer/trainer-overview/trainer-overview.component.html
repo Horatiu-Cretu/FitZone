@@ -1,0 +1,27 @@
+<div class="dashboard-section">
+  <h2>Trainer Dashboard</h2>
+  <p *ngIf="!isLoading">Hello, {{trainerName}}! Manage your sessions and view your schedule.</p>
+  <div *ngIf="isLoading" style="text-align: center; padding: 10px;">Loading dashboard...</div>
+  <div *ngIf="error && !isLoading" class="alert alert-danger">{{error}}</div>
+</div>
+
+<div *ngIf="!isLoading && !error">
+  <div class="dashboard-section">
+    <h3>Upcoming Sessions</h3>
+    <div *ngIf="upcomingSessions.length > 0; else noSessions">
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let session of upcomingSessions | slice:0:5"> <strong>{{ session.name }}</strong> - {{ session.startTime | date:'fullDate' }} at {{ session.startTime | date:'shortTime' }}
+          (Participants: {{session.currentParticipants}}/{{session.capacity}})
+          <a [routerLink]="['/trainer/session-details', session.id]" class="btn btn-sm btn-outline-primary float-end">View Details</a>
+        </li>
+      </ul>
+      <a *ngIf="upcomingSessions.length > 5" routerLink="/trainer/my-sessions" class="btn btn-link mt-2">View all upcoming sessions...</a>
+    </div>
+    <ng-template #noSessions><p>No upcoming sessions scheduled. <a routerLink="/trainer/manage-sessions">Add a new one!</a></p></ng-template>
+  </div>
+
+  <div class="dashboard-section">
+    <h3>Today's Summary</h3>
+    <p>Total Participants in Today's Sessions: <strong>{{ totalParticipantsToday }}</strong></p>
+  </div>
+</div>

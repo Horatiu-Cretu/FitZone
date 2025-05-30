@@ -1,0 +1,21 @@
+<div class="dashboard-layout">
+  <aside class="dashboard-sidebar">
+    <div class="dashboard-user-info">
+      <h3>Welcome, {{ userName }}!</h3>
+      <p>Role: Client</p>
+    </div>
+    <nav class="dashboard-nav">
+      <ul>
+        <li><a routerLink="overview" routerLinkActive="active-link">Dashboard Home</a></li>
+        <li><a routerLink="workouts" routerLinkActive="active-link">Class Schedule & Booking</a></li>
+        <li><a routerLink="my-bookings" routerLinkActive="active-link">My Bookings</a></li>
+        <li><a routerLink="my-subscriptions" routerLinkActive="active-link">My Subscriptions</a></li>
+        <li><a routerLink="buy-membership" routerLinkActive="active-link">Buy Membership</a></li>
+        <li><a (click)="logout()">Logout</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <main class="dashboard-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

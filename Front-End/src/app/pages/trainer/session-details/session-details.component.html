@@ -1,1 +1,54 @@
-<p>session-details works!</p>
+<div class="dashboard-section session-details-container" *ngIf="session && !isLoading">
+  <h2>Session Details: {{ session.name }}</h2>
+  <a routerLink="/trainer/my-sessions" class="btn btn-secondary btn-back mb-3">Back to My Sessions</a>
+
+  <div class="session-info-grid">
+    <div class="info-item"><strong>Date:</strong> {{ session.displayDate }}</div>
+    <div class="info-item"><strong>Time:</strong> {{ session.displayTime }}</div>
+    <div class="info-item"><strong>Room:</strong> {{ session.room || 'N/A' }}</div>
+    <div class="info-item"><strong>Booked:</strong> {{ session.clients.length }} / {{ session.capacity }}</div>
+  </div>
+
+  <div class="session-description" *ngIf="session.description">
+    <h3>Description</h3>
+    <p>{{ session.description }}</p>
+  </div>
+
+  <div class="participants-section">
+    <h3>Enrolled Clients ({{ session.clients.length }})</h3>
+    <div *ngIf="session.clients.length > 0; else noClients" class="participants-list">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Client Name / ID</th>
+          <th>Email</th>
+          <th>Booking Date</th>
+          <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let client of session.clients">
+          <td>{{ client.name }}</td>
+          <td>{{ client.email }}</td>
+          <td>{{ client.bookingDate | date:'medium' }}</td>
+          <td><span class="badge bg-success">{{ client.status }}</span></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <ng-template #noClients>
+      <p>No clients enrolled in this session yet.</p>
+    </ng-template>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="dashboard-section" style="text-align: center; padding: 20px;">
+  <p>Loading session details...</p>
+</div>
+<div *ngIf="!isLoading && loadingError" class="dashboard-section error-message" style="color: red; background-color: #fdd; border: 1px solid red; padding: 15px; border-radius: 6px;">
+  <p>{{ loadingError }}</p>
+  <a routerLink="/trainer/my-sessions" class="btn btn-secondary btn-sm mt-2">Back to My Sessions</a>
+</div>
+<div *ngIf="!isLoading && !session && !loadingError && sessionIdFromRoute" class="dashboard-section error-message" style="color: orange; background-color: #fff3cd; border: 1px solid orange; padding: 15px; border-radius: 6px;">
+  <p>Session details could not be found for ID: {{ sessionIdFromRoute }}.</p> <a routerLink="/trainer/my-sessions" class="btn btn-secondary btn-sm mt-2">Back to My Sessions</a>
+</div>

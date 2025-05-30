@@ -1,0 +1,27 @@
+<div class="dashboard-section buy-membership-container"> <h2>Choose Your FitZone Membership</h2>
+  <p>Select the plan that best suits your fitness journey and goals.</p>
+
+  <div *ngIf="isLoading" style="text-align: center; padding: 20px;">Loading plans...</div>
+  <div *ngIf="error" style="color: red; text-align: center; padding: 20px;">{{ error }}</div>
+  <div *ngIf="purchaseMessage" class="alert alert-info" style="text-align: center; margin-bottom: 20px; padding: 10px; border-radius: 5px; background-color: #e7f3fe; border: 1px solid #d0eaff;">{{ purchaseMessage }}</div>
+
+
+  <div *ngIf="!isLoading && !error && plans.length > 0" class="membership-plans">
+    <div *ngFor="let plan of plans" class="plan-card" [class.highlighted]="plan.highlight" [class.inactive]="!plan.isActive">
+      <div *ngIf="plan.highlight && plan.isActive" class="popular-badge">Most Popular</div>
+      <div *ngIf="!plan.isActive" class="popular-badge" style="background-color: grey;">Archived</div>
+      <h3>{{ plan.name }}</h3>
+      <p class="price">{{ plan.price }} {{ plan.durationDays === 30 ? '/month' : (plan.durationDays === 90 ? '/quarter' : (plan.durationDays === 365 ? '/year' : '/ ' + plan.durationDays + ' days')) }}</p>
+      <ul>
+        <li *ngFor="let feature of plan.features">{{ feature }}</li>
+        <li *ngIf="!plan.isActive" style="color: grey;">This plan is currently not available.</li>
+      </ul>
+      <button class="btn btn-select-plan" (click)="selectPlan(plan.id)" [disabled]="!plan.isActive">
+        {{ plan.isActive ? (plan.highlight ? 'Get Started' : 'Select Plan') : 'Not Available' }}
+      </button>
+    </div>
+  </div>
+  <div *ngIf="!isLoading && !error && plans.length === 0">
+    <p class="no-items-message">No membership plans available at the moment.</p>
+  </div>
+</div>

@@ -1,24 +1,47 @@
 <div class="auth-container">
-  <div class="auth-form-placeholder">
+  <form class="auth-form-placeholder" #signupForm="ngForm" (ngSubmit)="onSignup()">
     <h2>Create a new account</h2>
     <p>Join FitZone! Achieve your goals with us!</p>
 
     <div class="form-group-placeholder">
       <label for="fullName-signup-static">Full Name:</label>
-      <input type="text" id="fullName-signup-static" class="form-control-placeholder" placeholder="Your full name">
+      <input type="text" id="fullName-signup-static" name="fullName" class="form-control-placeholder" placeholder="Your full name" [(ngModel)]="signupData.fullName" required #fullNameInput="ngModel">
+      <div *ngIf="fullNameInput.invalid && (fullNameInput.dirty || fullNameInput.touched)" class="error-message-static" style="color: #EF4444; font-size: 0.8rem;">
+        <small *ngIf="fullNameInput.errors?.['required']">Full name is required.</small>
+      </div>
     </div>
     <div class="form-group-placeholder">
       <label for="email-signup-static">Email:</label>
-      <input type="email" id="email-signup-static" class="form-control-placeholder" placeholder="Your email address">
+      <input type="email" id="email-signup-static" name="email" class="form-control-placeholder" placeholder="Your email address" [(ngModel)]="signupData.email" required email #emailInput="ngModel">
+      <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="error-message-static" style="color: #EF4444; font-size: 0.8rem;">
+        <small *ngIf="emailInput.errors?.['required']">Email is required.</small>
+        <small *ngIf="emailInput.errors?.['email']">Enter a valid email.</small>
+      </div>
     </div>
     <div class="form-group-placeholder">
       <label for="password-signup-static">Create a password:</label>
-      <input type="password" id="password-signup-static" class="form-control-placeholder" placeholder="Choose a safe password">
+      <input type="password" id="password-signup-static" name="password" class="form-control-placeholder" placeholder="Choose a safe password" [(ngModel)]="signupData.password" required minlength="6" #passwordInput="ngModel">
+      <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="error-message-static" style="color: #EF4444; font-size: 0.8rem;">
+        <small *ngIf="passwordInput.errors?.['required']">Password is required.</small>
+        <small *ngIf="passwordInput.errors?.['minlength']">Password must be at least 6 characters.</small>
+      </div>
     </div>
-    <button type="button" class="btn-submit-placeholder">SIGN ME UP!!</button>
+    <div class="form-group-placeholder">
+      <label for="role-signup">Role (optional, defaults to User):</label>
+      <select id="role-signup" name="role" class="form-control-placeholder" [(ngModel)]="signupData.role">
+        <option value="USER">User/Client</option>
+        <option value="TRAINER">Trainer</option>
+      </select>
+    </div>
+
+    <div *ngIf="signupError" class="error-message-static" style="margin-top: 10px; color: #EF4444; text-align: center;">
+      <small>{{ signupError }}</small>
+    </div>
+
+    <button type="submit" class="btn-submit-placeholder" [disabled]="!signupForm.valid">SIGN ME UP!!</button>
 
     <div class="navigation-links">
       <p>Already have an account? <a routerLink="/login">Log in here!</a></p>
     </div>
-  </div>
+  </form>
 </div>

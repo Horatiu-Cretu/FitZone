@@ -1,0 +1,29 @@
+<div class="dashboard-section">
+  <h2>Admin Dashboard Overview</h2>
+  <p *ngIf="!isLoading">Welcome, {{adminName}}!</p>
+  <div *ngIf="isLoading" style="text-align: center; padding: 10px;">Loading overview...</div>
+  <div *ngIf="error && !isLoading" class="alert alert-danger">{{error}}</div>
+</div>
+
+<div *ngIf="!isLoading && !error" class="overview-stats dashboard-section">
+  <div class="stat-card">
+    <h4>Total Users (Mock)</h4>
+    <p>{{ stats.totalUsers }}</p>
+  </div>
+  <div class="stat-card">
+    <h4>Active Subscriptions (Mock Calc)</h4>
+    <p>{{ stats.activeSubscriptions }}</p>
+  </div>
+  <div class="stat-card">
+    <h4>Total Subscription Plans</h4>
+    <p>{{ stats.totalSubscriptionPlans }}</p>
+  </div>
+  <div class="stat-card">
+    <h4>Total Trainers (Mock)</h4>
+    <p>{{ stats.totalTrainers }}</p>
+  </div>
+  <div class="stat-card">
+    <h4>Most Popular Class (Mock)</h4>
+    <p>{{ stats.popularClass }}</p>
+  </div>
+</div>

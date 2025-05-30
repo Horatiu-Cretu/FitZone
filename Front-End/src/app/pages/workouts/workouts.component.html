@@ -3,21 +3,30 @@
   <h2>Available Workouts</h2>
   <p>Choose a class that fits your goals and schedule.</p>
 
-  <div class="workouts-grid">
+  <div *ngIf="isLoading" class="loading-indicator" style="text-align: center; padding: 20px;">
+    <p>Loading workouts...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message" style="text-align: center; color: red; padding: 20px;">
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && !error && workouts.length > 0" class="workouts-grid">
     <div class="workout-card" *ngFor="let workout of workouts">
-      <img [src]="workout.imageUrl" [alt]="workout.name" class="workout-image" onerror="this.src='https://placehold.co/300x200/cccccc/FFFFFF?text=Image+Not+Found'">
+      <img [src]="workout.imageUrl || 'https://placehold.co/300x200/cccccc/FFFFFF?text=Image+Not+Found'" [alt]="workout.name" class="workout-image" onerror="this.src='https://placehold.co/300x200/cccccc/FFFFFF?text=Image+Not+Found'">
       <div class="workout-info">
         <h3>{{ workout.name }}</h3>
-        <p class="trainer"><i class="icon" aria-hidden="true">🧑‍🏫</i> Trainer: {{ workout.trainer }}</p>
-        <p class="time"><i class="icon" aria-hidden="true">⏰</i> Time: {{ workout.time }}</p>
+        <p class="trainer"><i class="icon" aria-hidden="true">🧑‍🏫</i> Trainer: {{ workout.trainer || ('Trainer ID: ' + workout.trainerId) }}</p>
+        <p class="time"><i class="icon" aria-hidden="true">⏰</i> Time: {{ workout.time || (workout.startTime | date:'shortTime') }}</p>
         <p class="description">{{ workout.description }}</p>
-        <div class="button-group single-button"> <a [routerLink]="['/schedule', workout.id]" class="btn btn-primary"> Book Now </a>
+        <div class="button-group single-button">
+          <a [routerLink]="['/schedule', workout.id]" class="btn btn-primary">View Schedule & Book</a>
         </div>
       </div>
     </div>
   </div>
 
-  <div *ngIf="workouts.length === 0" class="no-workouts">
+  <div *ngIf="!isLoading && !error && workouts.length === 0" class="no-workouts">
     <p>No workouts available at the moment. Please check back later!</p>
   </div>
 </div>

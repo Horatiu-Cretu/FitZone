@@ -1,0 +1,26 @@
+<div class="dashboard-section">
+  <h2>Client Dashboard</h2>
+  <p *ngIf="!isLoading">Welcome back, {{userName}}! Here's a quick look at your activities.</p>
+  <div *ngIf="isLoading" style="text-align: center; padding: 10px;">Loading dashboard...</div>
+  <div *ngIf="error && !isLoading" class="alert alert-danger">{{error}}</div>
+</div>
+
+<div *ngIf="!isLoading && !error">
+  <div class="dashboard-section">
+    <h3>Next Booked Session</h3>
+    <div *ngIf="nextBooking; else noBooking">
+      <p><strong>{{ nextBooking.trainingSessionName }}</strong></p> <p>Date: {{ nextBooking.displayDate }} at {{ nextBooking.displayTime }}</p> <a routerLink="/client/my-bookings" class="btn btn-sm btn-primary">View All Bookings</a>
+    </div>
+    <ng-template #noBooking><p>You have no upcoming sessions. <a routerLink="/client/workouts">Book a new one!</a></p></ng-template>
+  </div>
+
+  <div class="dashboard-section">
+    <h3>Current Subscription</h3>
+    <div *ngIf="currentSubscription; else noSubscription">
+      <p><strong>{{ currentSubscription.planName }}</strong></p>
+      <p>Status: <span class="badge bg-success">{{ currentSubscription.status }}</span></p>
+      <p>Valid until: {{ currentSubscription.displayEndDate }}</p> <a routerLink="/client/my-subscriptions" class="btn btn-sm btn-secondary">Manage Subscriptions</a>
+    </div>
+    <ng-template #noSubscription><p>You do not have an active subscription. <a routerLink="/client/buy-membership">Buy one now!</a></p></ng-template>
+  </div>
+</div>

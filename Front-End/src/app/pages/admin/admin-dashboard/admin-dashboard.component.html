@@ -1,0 +1,21 @@
+<div class="dashboard-layout">
+  <aside class="dashboard-sidebar">
+    <div class="dashboard-user-info">
+      <h3>Welcome, {{ userName }}!</h3>
+      <p>Role: Administrator</p>
+    </div>
+    <nav class="dashboard-nav">
+      <ul>
+        <li><a routerLink="overview" routerLinkActive="active-link">Dashboard Home</a></li>
+        <li><a routerLink="subscription-plans" routerLinkActive="active-link">Manage Subscription Plans</a></li>
+        <li><a routerLink="/user-management" routerLinkActive="active-link">User Management</a></li>
+        <li><a routerLink="/trainer-management" routerLinkActive="active-link">Trainer Management</a></li>
+        <li><a routerLink="/workout-management" routerLinkActive="active-link">Workout Management</a></li>
+        <li><a (click)="logout()">Logout</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <main class="dashboard-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

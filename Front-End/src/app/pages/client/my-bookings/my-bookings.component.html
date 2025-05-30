@@ -1,0 +1,22 @@
+<div class="dashboard-section my-bookings-container"> <h2>My Booked Sessions</h2>
+  <p>Here's a list of your upcoming and past booked sessions.</p>
+
+  <div *ngIf="isLoading" style="text-align: center; padding: 20px;">Loading bookings...</div>
+  <div *ngIf="error" style="color: red; text-align: center; padding: 20px;">{{ error }}</div>
+
+  <div *ngIf="!isLoading && !error && bookings.length > 0" class="bookings-list">
+    <div *ngFor="let booking of bookings" class="booking-card" [ngClass]="booking.status.toLowerCase()">
+      <h3>{{ booking.workoutName }}</h3>
+      <p><strong>Session ID:</strong> {{ booking.trainingSessionId }}</p>
+      <p><strong>Booked On:</strong> {{ booking.bookingTime | date:'medium' }}</p>
+      <p><strong>Status:</strong> <span class="status-badge">{{ booking.status }}</span></p>
+      <button *ngIf="booking.status === 'CONFIRMED'" class="btn btn-sm btn-danger btn-cancel" (click)="cancelBooking(booking.id)">
+        Cancel Booking
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !error && bookings.length === 0">
+    <p class="no-items-message">You have no bookings yet. <a routerLink="/client/workouts">Explore workouts and book a session!</a></p>
+  </div>
+</div>

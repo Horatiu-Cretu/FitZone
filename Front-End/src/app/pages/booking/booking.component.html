@@ -2,52 +2,45 @@
   <h2>Book Your Session</h2>
   <p>Secure your spot in one of our popular classes.</p>
 
-  <form class="booking-form" (ngSubmit)="submitBooking()" #bookingForm="ngForm">
+  <form class="booking-form" (ngSubmit)="submitBooking(bookingForm)" #bookingForm="ngForm">
     <div class="form-group">
-      <label for="workout-select">Select Workout:</label>
-      <select id="workout-select" name="selectedWorkout" ngModel required>
-        <option value="" disabled selected>-- Choose a class --</option>
-        <option value="blast">Full Body Blast</option>
-        <option value="yoga">Yoga Flow</option>
-        <option value="strength">Strength & Conditioning</option>
-        <option value="spin">Spin Cycle Challenge</option>
-        <option value="boxing">Boxing Fundamentals</option>
-        <option value="pilates">Mat Pilates</option>
+      <label for="workout-select">Select Workout Session:</label>
+      <select id="workout-select" name="selectedWorkoutId" class="form-control" [(ngModel)]="model.selectedWorkoutId" required #workoutInput="ngModel">
+        <option [ngValue]="null" disabled>-- Choose a class --</option>
+        <option *ngFor="let workout of availableWorkouts" [value]="workout.id">
+          {{ workout.name }} ({{ workout.startTime | date:'shortDate' }} {{ workout.startTime | date:'shortTime' }}) - {{workout.currentParticipants}}/{{workout.capacity}}
+        </option>
       </select>
-    </div>
-
-    <div class="form-group">
-      <label for="name">Full Name:</label>
-      <input type="text" id="name" name="fullName" ngModel required placeholder="Enter your full name">
-    </div>
-
-    <div class="form-group">
-      <label for="email">Email Address:</label>
-      <input type="email" id="email" name="email" ngModel required email placeholder="Enter your email">
+      <div *ngIf="workoutInput.invalid && (workoutInput.touched || bookingForm.submitted)" class="error-message">
+        <small *ngIf="workoutInput.errors?.['required']">Please select a workout.</small>
+      </div>
     </div>
 
     <fieldset class="payment-section">
       <legend>Payment Information</legend>
-      <p>Payment gateway integration would go here.</p>
+      <p>Payment would be processed here. (Currently Simulated)</p>
       <div class="form-group">
         <label for="card-number">Card Number:</label>
-        <input type="text" id="card-number" placeholder="**** **** **** ****" disabled>
+        <input type="text" id="card-number" class="form-control" placeholder="**** **** **** ****" disabled>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label for="expiry">Expiry Date:</label>
-          <input type="text" id="expiry" placeholder="MM/YY" disabled>
+          <input type="text" id="expiry" class="form-control" placeholder="MM/YY" disabled>
         </div>
         <div class="form-group">
           <label for="cvc">CVC:</label>
-          <input type="text" id="cvc" placeholder="***" disabled>
+          <input type="text" id="cvc" class="form-control" placeholder="***" disabled>
         </div>
       </div>
     </fieldset>
 
-    <button type="submit" class="btn btn-primary submit-btn" [disabled]="!bookingForm.form.valid">
-      Confirm Booking & Pay
+    <div *ngIf="bookingError" class="error-message" style="color: red; margin-bottom: 10px; text-align:center;">{{ bookingError }}</div>
+
+    <button type="submit" class="btn btn-primary submit-btn" [disabled]="!bookingForm.form.valid || !model.selectedWorkoutId">
+      Confirm Booking
     </button>
 
-    <p *ngIf="submissionMessage" class="submission-message" [innerHTML]="submissionMessage"></p> </form>
+    <p *ngIf="submissionMessage" class="submission-message">{{ submissionMessage }}</p>
+  </form>
 </div>

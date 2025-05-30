@@ -1,74 +1,83 @@
-<div class="manage-sessions-container">
-  <h2>Manage Training Sessions</h2>
+<div class="dashboard-section manage-sessions-container"> <h2>Manage Training Sessions</h2>
   <p>Add, edit, or delete training sessions from the schedule.</p>
 
-  <button class="btn btn-add-new" (click)="toggleAddForm()">
-    {{ showAddForm ? 'Cancel' : '+ Add New Session' }}
+  <button class="btn btn-primary btn-add-new" (click)="toggleAddForm()"> {{ showAddForm ? 'Cancel' : '+ Add New Session' }}
   </button>
 
   <form *ngIf="showAddForm" #sessionForm="ngForm" (ngSubmit)="submitSessionForm(sessionForm)" class="session-form">
-    <h3>{{ editingSession ? 'Edit Session' : 'Add New Session' }}</h3>
+    <h3>{{ !editingSession ? 'Add New Session' : editingSession.name + 'Edit Session (' + ')' }}</h3>
+    <input type="hidden" name="id" [(ngModel)]="newSession.id"> <div class="form-group">
+    <label for="sessionName">Session Name:</label>
+    <input type="text" id="sessionName" name="sessionName" class="form-control" [(ngModel)]="newSession.name" required #name="ngModel">
+    <div *ngIf="name.invalid && (name.dirty || name.touched)" class="error-message">Name is required.</div>
+  </div>
+
     <div class="form-group">
-      <label for="sessionName">Session Name:</label>
-      <input type="text" id="sessionName" name="sessionName" [(ngModel)]="newSession.name" required #name="ngModel">
-      <div *ngIf="name.invalid && (name.dirty || name.touched)" class="error-message">Name is required.</div>
+      <label for="sessionDescription">Description:</label>
+      <textarea id="sessionDescription" name="sessionDescription" class="form-control" [(ngModel)]="newSession.description" required #description="ngModel"></textarea>
+      <div *ngIf="description.invalid && (description.dirty || description.touched)" class="error-message">Description is required.</div>
     </div>
+
     <div class="form-group">
       <label for="sessionDate">Date:</label>
-      <input type="date" id="sessionDate" name="sessionDate" [(ngModel)]="newSession.date" required #date="ngModel">
+      <input type="date" id="sessionDate" name="sessionDate" class="form-control" [(ngModel)]="newSession.date" required #date="ngModel">
       <div *ngIf="date.invalid && (date.dirty || date.touched)" class="error-message">Date is required.</div>
     </div>
+
     <div class="form-group">
-      <label for="sessionTime">Time:</label>
-      <input type="time" id="sessionTime" name="sessionTime" [(ngModel)]="newSession.time" required #time="ngModel">
+      <label for="sessionTime">Time (Start):</label>
+      <input type="time" id="sessionTime" name="sessionTime" class="form-control" [(ngModel)]="newSession.time" required #time="ngModel">
       <div *ngIf="time.invalid && (time.dirty || time.touched)" class="error-message">Time is required.</div>
     </div>
+
     <div class="form-group">
       <label for="sessionCapacity">Capacity:</label>
-      <input type="number" id="sessionCapacity" name="sessionCapacity" [(ngModel)]="newSession.capacity" required min="1" #capacity="ngModel">
-      <div *ngIf="capacity.invalid && (capacity.dirty || capacity.touched)" class="error-message">Valid capacity is required.</div>
+      <input type="number" id="sessionCapacity" name="sessionCapacity" class="form-control" [(ngModel)]="newSession.capacity" required min="1" #capacity="ngModel">
+      <div *ngIf="capacity.invalid && (capacity.dirty || capacity.touched)" class="error-message">Valid capacity (min 1) is required.</div>
     </div>
+
     <div class="form-group">
       <label for="sessionRoom">Room/Studio:</label>
-      <input type="text" id="sessionRoom" name="sessionRoom" [(ngModel)]="newSession.room" required #room="ngModel">
-      <div *ngIf="room.invalid && (room.dirty || room.touched)" class="error-message">Room is required.</div>
+      <input type="text" id="sessionRoom" name="sessionRoom" class="form-control" [(ngModel)]="newSession.room" #room="ngModel">
     </div>
-    <button type="submit" class="btn btn-save" [disabled]="sessionForm.invalid">
-      {{ editingSession ? 'Save Changes' : 'Add Session' }}
+
+    <button type="submit" class="btn btn-success btn-save" [disabled]="sessionForm.invalid"> {{ editingSession ? 'Save Changes (UI Only)' : 'Add Session' }}
     </button>
+    <button type="button" class="btn btn-secondary" (click)="toggleAddForm()" style="margin-left: 10px;">Cancel</button>
+
   </form>
 
   <div class="sessions-list-management">
     <h3>Current Sessions</h3>
-    <div *ngIf="sessions.length > 0; else noSessions" class="sessions-table-container">
-      <table>
-        <thead>
-        <tr>
-          <th>Name</th>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Capacity</th>
-          <th>Room</th>
-          <th>Actions</th>
-        </tr>
-        </thead>
+    <div *ngIf="isLoading" style="text-align: center; padding: 20px;">Loading sessions...</div>
+    <div *ngIf="error && !isLoading" style="color: red; text-align: center; padding: 20px;">{{ error }}</div>
+
+    <div *ngIf="!isLoading && !error && sessions.length > 0" class="sessions-table-container">
+      <table class="table table-striped"> <thead>
+      <tr>
+        <th>Name</th>
+        <th>Date & Time (Start)</th>
+        <th>Capacity</th>
+        <th>Participants</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
         <tbody>
         <tr *ngFor="let session of sessions">
           <td>{{ session.name }}</td>
-          <td>{{ session.date }}</td>
-          <td>{{ session.time }}</td>
+          <td>{{ session.startTime | date:'medium' }}</td>
           <td>{{ session.capacity }}</td>
-          <td>{{ session.room }}</td>
+          <td>{{ session.currentParticipants }}</td>
           <td>
-            <button class="btn btn-edit" (click)="editSession(session)">Edit</button>
-            <button class="btn btn-delete" (click)="deleteSession(session.id)">Delete</button>
+            <button class="btn btn-sm btn-info btn-edit" (click)="editSession(session)">Edit (UI Only)</button>
+            <button class="btn btn-sm btn-danger btn-delete" (click)="deleteSession(session.id)">Delete (UI Only)</button>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
-    <ng-template #noSessions>
+    <div *ngIf="!isLoading && !error && sessions.length === 0">
       <p class="no-items-message">No sessions have been added yet.</p>
-    </ng-template>
+    </div>
   </div>
 </div>

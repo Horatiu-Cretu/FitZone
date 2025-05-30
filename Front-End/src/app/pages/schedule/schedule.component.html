@@ -1,34 +1,54 @@
 <div class="schedule-container">
-  <h2>Schedule for {{ workoutName }}</h2>
+  <div *ngIf="isLoadingWorkoutDetails" style="text-align: center; padding: 20px;">Loading workout details...</div>
+  <div *ngIf="!isLoadingWorkoutDetails && scheduleError && !workoutDetails" style="color: red; text-align: center; padding: 20px;">{{ scheduleError }}</div>
 
-  <div class="calendar-nav">
-    <button (click)="goToPreviousMonth()" class="btn btn-nav">&lt; Prev</button>
-    <span class="current-month">{{ currentDate | date:'MMMM yyyy' }}</span>
-    <button (click)="goToNextMonth()" class="btn btn-nav">Next &gt;</button>
-  </div>
+  <ng-container *ngIf="workoutDetails">
+    <h2>Schedule for {{ workoutDetails.name }}</h2>
+    <p>{{ workoutDetails.description }}</p>
 
-  <div class="calendar-grid">
-    <div class="weekday" *ngFor="let dayLabel of weekdays">{{ dayLabel }}</div>
-    <div
-      *ngFor="let day of calendarDays"
-      class="day-cell"
-      [class.other-month]="!day.isCurrentMonth"
-      [class.today]="day.isToday && day.isCurrentMonth"
-      [class.selected]="isDaySelected(day)"
-      (click)="selectDay(day)">
-      {{ day.dayOfMonth }}
+    <div class="calendar-nav">
+      <button (click)="goToPreviousMonth()" class="btn btn-nav">&lt; Prev</button>
+      <span class="current-month">{{ currentDate | date:'MMMM yyyy' }}</span>
+      <button (click)="goToNextMonth()" class="btn btn-nav">Next &gt;</button>
     </div>
-  </div>
 
-  <div *ngIf="selectedDate" class="timetable-container">
-    <h3>Timetable for {{ selectedDate | date:'EEEE, MMMM d, yyyy' }}</h3>
-    <ul class="timetable-list">
-      <li *ngFor="let slot of hourlySchedule" class="time-slot" [class.booked]="slot.status === 'booked'" [class.available]="slot.status === 'available'">
-        <span class="time">{{ slot.displayTime }}</span>
-        <span class="status">{{ slot.status | titlecase }}</span>
-        <button *ngIf="slot.status === 'available'" class="btn btn-book-slot" (click)="bookTimeSlot(slot)">Book Slot</button>
-      </li>
-    </ul>
-    <p class="mock-notice">*Booking data is simulated for demonstration.</p>
-  </div>
+    <div class="calendar-grid">
+      <div class="weekday" *ngFor="let dayLabel of weekdays">{{ dayLabel }}</div>
+      <div
+        *ngFor="let day of calendarDays"
+        class="day-cell"
+        [class.other-month]="!day.isCurrentMonth"
+        [class.today]="day.isToday && day.isCurrentMonth"
+        [class.selected]="isDaySelected(day)"
+        [class.has-availability]="day.hasAvailability"
+        (click)="selectDay(day)">
+        {{ day.dayOfMonth }}
+      </div>
+    </div>
+
+    <div *ngIf="selectedDate" class="timetable-container">
+      <h3>Available Slots for {{ selectedDate | date:'EEEE, MMMM d, yyyy' }}</h3>
+      <div *ngIf="isLoadingSchedule" style="text-align: center; padding: 10px;">Loading schedule...</div>
+      <div *ngIf="!isLoadingSchedule && scheduleError && hourlySchedule.length === 0" style="color: orange; text-align: center; padding: 10px;">{{ scheduleError }}</div>
+
+      <ul *ngIf="!isLoadingSchedule && hourlySchedule.length > 0" class="timetable-list">
+        <li *ngFor="let slot of hourlySchedule" class="time-slot" [ngClass]="slot.status">
+          <span class="time">{{ slot.displayTime }}</span>
+          <span class="status">{{ slot.status | titlecase }}</span>
+          <button *ngIf="slot.isBookable && slot.status === 'available' && (authService.isLoggedIn$ | async)" class="btn btn-sm btn-primary btn-book-slot" (click)="bookTimeSlot(slot)">Book Slot</button>
+          <span *ngIf="slot.status === 'available' && !(authService.isLoggedIn$ | async)" class="login-prompt">
+            <a [routerLink]="['/login']" [queryParams]="{returnUrl: router.url}">Login to book</a>
+          </span>
+          <span *ngIf="slot.status === 'booked'" class="info-prompt">Fully Booked</span>
+          <span *ngIf="slot.status === 'past'" class="info-prompt">Session has passed</span>
+        </li>
+      </ul>
+      <div *ngIf="!isLoadingSchedule && hourlySchedule.length === 0 && !scheduleError" style="text-align: center; padding: 10px;">
+        No specific time slots found for this workout on the selected day.
+      </div>
+    </div>
+    <div *ngIf="bookingMessage" class="submission-message" [ngClass]="{'success': bookingMessage && !bookingMessage.includes('failed'), 'error': bookingMessage && bookingMessage.includes('failed')}" style="margin-top: 15px; padding: 10px; border-radius: 5px; text-align: center;">
+      {{ bookingMessage }}
+    </div>
+  </ng-container>
 </div>

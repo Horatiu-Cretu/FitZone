@@ -1,0 +1,19 @@
+<div class="dashboard-layout">
+  <aside class="dashboard-sidebar">
+    <div class="dashboard-user-info">
+      <h3>Welcome, {{ userName }}!</h3>
+      <p>Role: Trainer</p>
+    </div>
+    <nav class="dashboard-nav">
+      <ul>
+        <li><a routerLink="overview" routerLinkActive="active-link">Dashboard Home</a></li>
+        <li><a routerLink="my-sessions" routerLinkActive="active-link">My Training Sessions</a></li>
+        <li><a routerLink="manage-sessions" routerLinkActive="active-link">Manage Sessions</a></li>
+        <li><a (click)="logout()">Logout</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <main class="dashboard-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

@@ -1,0 +1,79 @@
+<div class="dashboard-section">
+  <h2>Manage Subscription Plans</h2>
+  <button class="btn btn-primary mb-3" (click)="openAddPlanModal()">+ Add New Plan</button>
+
+  <div *ngIf="showForm" class="plan-form-container card card-body mb-3">
+    <h3>{{ editingPlanOriginal ? 'Edit Plan: ' + editingPlanOriginal.name : 'Add New Plan' }}</h3>
+    <form #planForm="ngForm" (ngSubmit)="submitPlanForm(planForm)">
+      <input type="hidden" name="id" [(ngModel)]="currentPlanForm.id"> <div class="form-group mb-2">
+      <label for="planName">Plan Name:</label>
+      <input type="text" class="form-control" id="planName" name="planName" [(ngModel)]="currentPlanForm.name" required #nameInput="ngModel">
+      <small *ngIf="nameInput.invalid && nameInput.touched" class="text-danger">Name is required.</small>
+    </div>
+
+      <div class="form-group mb-2">
+        <label for="planPrice">Price (numeric, e.g., 29.99):</label>
+        <input type="number" class="form-control" id="planPrice" name="planPrice" [(ngModel)]="currentPlanForm.price" required min="0" #priceInput="ngModel">
+        <small *ngIf="priceInput.invalid && priceInput.touched" class="text-danger">Valid positive price is required.</small>
+      </div>
+
+      <div class="form-group mb-2">
+        <label for="planDurationDays">Duration (in days, e.g., 30 for monthly):</label>
+        <input type="number" class="form-control" id="planDurationDays" name="planDurationDays" [(ngModel)]="currentPlanForm.durationDays" required min="1" #durationInput="ngModel">
+        <small *ngIf="durationInput.invalid && durationInput.touched" class="text-danger">Valid positive duration (days) is required.</small>
+      </div>
+
+      <div class="form-group mb-2">
+        <label for="planFeaturesCsv">Features / Description (comma-separated for multiple features):</label>
+        <textarea class="form-control" id="planFeaturesCsv" name="featuresCsv" [(ngModel)]="currentPlanForm.featuresCsv" required #featuresInput="ngModel" rows="3"></textarea>
+        <small *ngIf="featuresInput.invalid && featuresInput.touched" class="text-danger">Description/Features are required.</small>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="planStatusActive">Status:</label>
+        <select class="form-control" id="planStatusActive" name="isActive" [(ngModel)]="currentPlanForm.isActive">
+          <option [ngValue]="true">Active</option>
+          <option [ngValue]="false">Archived/Inactive</option>
+        </select>
+      </div>
+      <div *ngIf="formError" class="alert alert-danger">{{formError}}</div>
+      <button type="submit" class="btn btn-success me-2" [disabled]="planForm.invalid">Save Plan</button>
+      <button type="button" class="btn btn-secondary" (click)="cancelForm(planForm)">Cancel</button>
+    </form>
+  </div>
+
+  <div *ngIf="isLoading" style="text-align: center; padding: 20px;">Loading plans...</div>
+  <div *ngIf="error && !isLoading" style="color: red; text-align: center; padding: 20px;">{{ error }}</div>
+
+
+  <table class="table table-striped" *ngIf="!isLoading && !error && plans.length > 0; else noPlans">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Duration (Days)</th>
+      <th>Features/Description</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let plan of plans">
+      <td>{{ plan.name }}</td>
+      <td>{{ plan.price | currency:'USD' }}</td> <td>{{ plan.durationDays }}</td>
+      <td>
+        <ul *ngIf="plan.features && plan.features.length > 0 && plan.features[0]">
+          <li *ngFor="let feature of plan.features">{{ feature }}</li>
+        </ul>
+        <span *ngIf="!(plan.features && plan.features.length > 0 && plan.features[0])">{{plan.description}}</span>
+      </td>
+      <td><span class="badge" [ngClass]="{'bg-success': plan.isActive, 'bg-warning': !plan.isActive}">{{ plan.isActive ? 'Active' : 'Inactive' }}</span></td>
+      <td>
+        <button class="btn btn-sm btn-info me-2" (click)="editPlan(plan)">Edit</button>
+        <button class="btn btn-sm btn-danger" (click)="deletePlan(plan.id)">Delete (Mark Inactive)</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <ng-template #noPlans><div *ngIf="!isLoading && !error"><p class="no-items-message">No subscription plans found. Add one using the button above.</p></div></ng-template>
+</div>

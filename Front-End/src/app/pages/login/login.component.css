@@ -31,15 +31,8 @@
   font-size: 0.95rem;
 }
 
-.auth-form-placeholder .info-text {
-  color: #7f8c8d;
-  font-style: italic;
-  margin-bottom: 25px;
-  font-size: 0.9rem;
-}
-
 .form-group-placeholder {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   text-align: left;
 }
 
@@ -67,6 +60,36 @@
   box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
 }
 
+.role-selection {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+}
+
+.role-selection label {
+  margin-right: 10px;
+  font-size: 0.9rem;
+  color: #34495e;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.role-selection label:last-child {
+  margin-right: 0;
+}
+
+.role-selection input[type="radio"] {
+  margin-right: 5px;
+  accent-color: #10B981;
+}
+
+
 .btn-submit-placeholder {
   width: 100%;
   padding: 12px 20px;
@@ -84,6 +107,14 @@
 .btn-submit-placeholder:hover {
   background-color: #0d946a;
 }
+.btn-submit-placeholder:disabled {
+  background-color: #9CA3AF;
+  cursor: not-allowed;
+}
+.btn-submit-placeholder:disabled:hover {
+  background-color: #9CA3AF;
+}
+
 
 .navigation-links {
   margin-top: 25px;
@@ -98,4 +129,11 @@
 
 .navigation-links a:hover {
   text-decoration: underline;
+}
+
+.error-message-static small {
+  color: #EF4444;
+  font-size: 0.8rem;
+  display: block;
+  margin-top: 3px;
 }

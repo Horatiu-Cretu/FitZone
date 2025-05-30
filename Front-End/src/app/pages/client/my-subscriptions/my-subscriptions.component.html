@@ -1,0 +1,36 @@
+<div class="dashboard-section">
+  <h2>My Subscriptions</h2>
+
+  <div *ngIf="isLoading" style="text-align: center; padding: 20px;">Loading subscriptions...</div>
+  <div *ngIf="error && !isLoading" style="color: red; text-align: center; padding: 20px;">{{ error }}</div>
+  <div *ngIf="cancelMessage" class="alert alert-info" style="text-align: center; margin-bottom: 15px; padding: 10px; border-radius: 4px; background-color: #e7f3fe; border: 1px solid #d0eaff;">{{ cancelMessage }}</div>
+
+
+  <div *ngIf="!isLoading && !error && activeSubscription">
+    <h3>Active Subscription</h3>
+    <div class="subscription-item">
+      <h4>{{ activeSubscription.planName }} <span class="badge bg-success">{{ activeSubscription.status }}</span></h4>
+      <p><strong>Description:</strong> {{ activeSubscription.planDescription }}</p>
+      <p><strong>Price:</strong> {{ activeSubscription.pricePaid | currency:'USD' }}</p>
+      <p><strong>Active Since:</strong> {{ activeSubscription.startDate | date:'longDate' }}</p>
+      <p><strong>Ends On:</strong> {{ activeSubscription.endDate | date:'longDate' }}</p>
+      <button *ngIf="getCanCancel(activeSubscription)" class="btn btn-sm btn-outline-danger mt-2" (click)="requestCancelSubscription(activeSubscription.id)">
+        Cancel Subscription
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !error && latestSubscription && latestSubscription.status !== 'ACTIVE'" class="mt-4">
+    <h3>Latest Past/Cancelled Subscription</h3>
+    <div class="subscription-item past">
+      <h4>{{ latestSubscription.planName }} <span class="badge" [ngClass]="{'bg-warning text-dark': latestSubscription.status === 'CANCELLED', 'bg-secondary': latestSubscription.status === 'EXPIRED'}">{{ latestSubscription.status }}</span></h4>
+      <p><strong>Description:</strong> {{ latestSubscription.planDescription }}</p>
+      <p><strong>Price:</strong> {{ latestSubscription.pricePaid | currency:'USD' }}</p>
+      <p><strong>Period:</strong> {{ latestSubscription.startDate | date:'longDate' }} - {{ latestSubscription.endDate ? (latestSubscription.endDate | date:'longDate') : 'N/A' }}</p>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !error && !latestSubscription" class="no-items-message">
+    <p>You have no subscription history. <a routerLink="/client/buy-membership">Explore membership plans!</a></p>
+  </div>
+</div>

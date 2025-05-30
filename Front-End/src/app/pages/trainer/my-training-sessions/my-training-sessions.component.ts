@@ -1,28 +1,50 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { WorkoutService, TrainingSessionViewDTO } from '../../../services/workout.service';
 
-interface TrainingSession {
-  id: string;
-  className: string;
-  date: string;
-  time: string;
-  participants: number;
-  capacity: number;
+interface MySessionViewModel extends TrainingSessionViewDTO {
+  displayDate: string;
+  displayTime: string;
+  className?: string;
 }
 
 @Component({
   selector: 'app-my-training-sessions',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, DatePipe],
   templateUrl: './my-training-sessions.component.html',
-  styleUrls: ['./my-training-sessions.component.css']
+  styleUrls: ['./my-training-sessions.component.css', '../../../dashboard.css']
 })
-export class MyTrainingSessionsComponent {
-  sessions: TrainingSession[] = [
-    { id: 'ts001', className: 'Full Body Blast', date: '2025-06-10', time: '6:00 PM', participants: 15, capacity: 20 },
-    { id: 'ts002', className: 'Strength & Conditioning', date: '2025-06-11', time: '7:00 AM', participants: 10, capacity: 15 },
-    { id: 'ts003', className: 'Boxing Fundamentals', date: '2025-06-12', time: '5:00 PM', participants: 12, capacity: 12 }
-  ];
-  constructor() { }
+export class MyTrainingSessionsComponent implements OnInit {
+  sessions: MySessionViewModel[] = [];
+  isLoading = true;
+  error: string | null = null;
+
+  constructor(private workoutService: WorkoutService) { }
+
+  ngOnInit(): void {
+    this.loadSessions();
+  }
+
+  loadSessions(): void {
+    this.isLoading = true;
+    this.error = null;
+    this.workoutService.getTrainerSessions().subscribe({
+      next: (data) => {
+        this.sessions = data.map(session => ({
+          ...session,
+          className: session.name,
+          displayDate: new Date(session.startTime).toLocaleDateString(),
+          displayTime: new Date(session.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }));
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching trainer sessions', err);
+        this.error = 'Failed to load your sessions.';
+        this.isLoading = false;
+      }
+    });
+  }
 }
