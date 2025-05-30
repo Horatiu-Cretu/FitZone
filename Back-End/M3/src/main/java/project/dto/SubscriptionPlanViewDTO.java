@@ -1,5 +1,6 @@
 package project.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +18,6 @@ public class SubscriptionPlanViewDTO {
     private String description;
     private BigDecimal price;
     private Integer durationDays;
+    @JsonProperty("isActive")
     private boolean isActive;
 }

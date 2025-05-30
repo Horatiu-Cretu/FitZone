@@ -5,7 +5,7 @@
   </button>
 
   <form *ngIf="showAddForm" #sessionForm="ngForm" (ngSubmit)="submitSessionForm(sessionForm)" class="session-form">
-    <h3>{{ !editingSession ? 'Add New Session' : editingSession.name + 'Edit Session (' + ')' }}</h3>
+    <h3>{{ editingSession ? 'Edit Session: ' + editingSession.name : 'Add New Session' }}</h3>
     <input type="hidden" name="id" [(ngModel)]="newSession.id"> <div class="form-group">
     <label for="sessionName">Session Name:</label>
     <input type="text" id="sessionName" name="sessionName" class="form-control" [(ngModel)]="newSession.name" required #name="ngModel">

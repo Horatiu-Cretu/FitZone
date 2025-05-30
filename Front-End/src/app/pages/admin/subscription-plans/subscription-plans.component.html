@@ -3,13 +3,14 @@
   <button class="btn btn-primary mb-3" (click)="openAddPlanModal()">+ Add New Plan</button>
 
   <div *ngIf="showForm" class="plan-form-container card card-body mb-3">
-    <h3>{{ editingPlanOriginal ? 'Edit Plan: ' + editingPlanOriginal.name : 'Add New Plan' }}</h3>
+    <h3>{{ formTitle }}</h3>
     <form #planForm="ngForm" (ngSubmit)="submitPlanForm(planForm)">
-      <input type="hidden" name="id" [(ngModel)]="currentPlanForm.id"> <div class="form-group mb-2">
-      <label for="planName">Plan Name:</label>
-      <input type="text" class="form-control" id="planName" name="planName" [(ngModel)]="currentPlanForm.name" required #nameInput="ngModel">
-      <small *ngIf="nameInput.invalid && nameInput.touched" class="text-danger">Name is required.</small>
-    </div>
+      <input type="hidden" name="id" [(ngModel)]="currentPlanForm.id">
+      <div class="form-group mb-2">
+        <label for="planName">Plan Name:</label>
+        <input type="text" class="form-control" id="planName" name="planName" [(ngModel)]="currentPlanForm.name" required #nameInput="ngModel">
+        <small *ngIf="nameInput.invalid && nameInput.touched" class="text-danger">Name is required.</small>
+      </div>
 
       <div class="form-group mb-2">
         <label for="planPrice">Price (numeric, e.g., 29.99):</label>
@@ -60,7 +61,8 @@
     <tbody>
     <tr *ngFor="let plan of plans">
       <td>{{ plan.name }}</td>
-      <td>{{ plan.price | currency:'USD' }}</td> <td>{{ plan.durationDays }}</td>
+      <td>{{ plan.price | currency:'USD' }}</td>
+      <td>{{ plan.durationDays }}</td>
       <td>
         <ul *ngIf="plan.features && plan.features.length > 0 && plan.features[0]">
           <li *ngFor="let feature of plan.features">{{ feature }}</li>

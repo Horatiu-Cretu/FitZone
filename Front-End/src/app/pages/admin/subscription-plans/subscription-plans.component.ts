@@ -4,8 +4,13 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { SubscriptionService, SubscriptionPlanViewDTO, SubscriptionPlanDTO } from '../../../services/subscription.service';
 import {Observable} from 'rxjs';
 
-interface PlanFormModel extends SubscriptionPlanDTO {
+interface PlanFormComponentModel {
   id?: string;
+  name: string;
+  price: number;
+  durationDays: number;
+  description: string;
+  isActive: boolean;
   featuresCsv?: string;
 }
 
@@ -19,7 +24,7 @@ interface PlanFormModel extends SubscriptionPlanDTO {
 export class SubscriptionPlansComponent implements OnInit {
   showForm = false;
   editingPlanOriginal: SubscriptionPlanViewDTO | null = null;
-  currentPlanForm: PlanFormModel = this.getEmptyPlanForm();
+  currentPlanForm: PlanFormComponentModel = this.getEmptyPlanForm();
 
   plans: SubscriptionPlanViewDTO[] = [];
   isLoading = true;
@@ -31,13 +36,26 @@ export class SubscriptionPlansComponent implements OnInit {
   ngOnInit(): void {
     this.loadPlans();
   }
-
   loadPlans(): void {
     this.isLoading = true;
     this.error = null;
     this.subscriptionService.getAllSubscriptionPlansForAdmin().subscribe({
-      next: (data) => {
-        this.plans = data.map(p => ({...p, features: p.description?.split(',').map(f => f.trim()) || [] }));
+      next: (data: any[]) => {
+        console.log('Data received by loadPlans() in Angular:', JSON.parse(JSON.stringify(data)));
+        this.plans = data.map((p: any) => { // p is also any here
+          const mappedPlan: SubscriptionPlanViewDTO = {
+            id: p.id,
+            name: p.name,
+            description: p.description,
+            price: p.price,
+            durationDays: p.durationDays,
+            isActive: p.active,
+            features: p.description?.split(',').map((f: string) => f.trim()) || [],
+
+          };
+          console.log(`Processing plan: ID=<span class="math-inline">\{mappedPlan\.id\}, Name\=</span>{mappedPlan.name}, mapped isActive=<span class="math-inline">\{mappedPlan\.isActive\}, Type\=</span>{typeof mappedPlan.isActive}`);
+          return mappedPlan;
+        });
         this.isLoading = false;
       },
       error: (err) => {
@@ -46,6 +64,10 @@ export class SubscriptionPlansComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  getEmptyPlanForm(): PlanFormComponentModel {
+    return { name: '', price: 0, durationDays: 30, description: '', featuresCsv: '', isActive: true };
   }
 
   openAddPlanModal(): void {
@@ -71,12 +93,12 @@ export class SubscriptionPlansComponent implements OnInit {
   }
 
   deletePlan(planId: number | string): void {
-    if (!confirm(`Are you sure you want to delete plan ID: ${planId}?`)) return;
+    if (!confirm(`Are you sure you want to delete plan ID: ${planId}? This will mark it as inactive.`)) return;
 
     this.subscriptionService.deleteAdminSubscriptionPlan(planId).subscribe({
       next: () => {
-        alert('Plan deleted (marked as inactive by backend).');
-        this.loadPlans(); // Refresh
+        alert('Plan marked as inactive successfully.');
+        this.loadPlans();
       },
       error: (err) => {
         console.error('Error deleting plan', err);
@@ -97,9 +119,8 @@ export class SubscriptionPlansComponent implements OnInit {
       description: this.currentPlanForm.featuresCsv || this.currentPlanForm.description,
       price: Number(this.currentPlanForm.price),
       durationDays: Number(this.currentPlanForm.durationDays),
-      isActive: this.currentPlanForm.isActive === undefined ? true : this.currentPlanForm.isActive,
+      isActive: this.currentPlanForm.isActive,
     };
-
 
     let operation: Observable<SubscriptionPlanViewDTO>;
 
@@ -126,12 +147,16 @@ export class SubscriptionPlansComponent implements OnInit {
     if (form) {
       form.resetForm(this.getEmptyPlanForm());
     }
+    this.currentPlanForm = this.getEmptyPlanForm();
     this.showForm = false;
     this.editingPlanOriginal = null;
     this.formError = null;
   }
 
-  getEmptyPlanForm(): PlanFormModel {
-    return { name: '', price: 0, durationDays: 30, description: '', featuresCsv: '', isActive: true };
+  get formTitle(): string {
+    if (this.editingPlanOriginal) {
+      return 'Edit Plan: ' + this.editingPlanOriginal.name;
+    }
+    return 'Add New Plan';
   }
 }
